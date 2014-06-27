@@ -12,4 +12,7 @@ namespace NProcessPipe
 
         IEnumerable<Exception> GetAllErrors();
     }
+
+    public interface IProcess<T, TProcessContext> : IProcess<T>
+    { }
 }
