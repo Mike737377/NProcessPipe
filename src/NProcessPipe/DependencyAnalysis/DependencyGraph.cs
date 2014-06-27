@@ -9,6 +9,9 @@ namespace NProcessPipe.DependencyAnalysis
     {
         private readonly HashSet<Edge<T>> _edges = new HashSet<Edge<T>>();
         private readonly HashSet<Node<T>> _nodes = new HashSet<Node<T>>();
+        private Guid _revisionVersion = Guid.Empty;
+        private Guid _orderedRevisionVersion = Guid.Empty;
+        private IEnumerable<Node<T>> orderedNodes;
 
         public void AddNode(T node)
         {
@@ -20,6 +23,15 @@ namespace NProcessPipe.DependencyAnalysis
             if (!_nodes.Contains(node))
             {
                 _nodes.Add(node);
+                _revisionVersion = Guid.NewGuid();
+            }
+        }
+
+        public void AddNodes(IEnumerable<T> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                AddNode(node);
             }
         }
 
@@ -31,12 +43,28 @@ namespace NProcessPipe.DependencyAnalysis
             }
         }
 
+        public void Connect(T source, T target)
+        {
+            _edges.Add(new Edge<T>(new Node<T>(source), new Node<T>(target)));
+            _revisionVersion = Guid.NewGuid();
+        }
+         
         public IEnumerable<Node<T>> Order()
         {
-            var order = new TopologicalSort(this);
-            return order.Order();
+            if (_orderedRevisionVersion != _revisionVersion)
+            {
+                var sort = new TopologicalSort(this);
+                orderedNodes = sort.Order();
+                _orderedRevisionVersion = _revisionVersion;
+            }
+
+            return orderedNodes;
         }
 
+        public string CreateGraph()
+        {
+            throw new NotImplementedException();
+        }
 
         private class TopologicalSort
         {
@@ -84,11 +112,6 @@ namespace NProcessPipe.DependencyAnalysis
 
                 return order;
             }
-        }
-        
-        public void Connect(T source, T target)
-        {
-            _edges.Add(new Edge<T>(new Node<T>(source), new Node<T>(target)));
         }
     }
 }
