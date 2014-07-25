@@ -35,7 +35,11 @@ namespace NProcessPipe
 
         public OperationRegistryFactory<TOperationRow> ScanAssembly()
         {
-            var assembly = Assembly.GetCallingAssembly();
+            return ScanAssembly(typeof(TOperationRow).Assembly);
+        }
+
+        public OperationRegistryFactory<TOperationRow> ScanAssembly(Assembly assembly)
+        {            
             var foundOperationTypes = assembly.GetTypes().Where(x => !x.IsAbstract && _operationType.IsAssignableFrom(x));
 
             foreach (var foundOperation in foundOperationTypes)

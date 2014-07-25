@@ -63,7 +63,14 @@ namespace NProcessPipe.DependencyAnalysis
 
         public string CreateGraph()
         {
-            throw new NotImplementedException();
+            var s = new StringBuilder();
+
+            foreach (var node in orderedNodes)
+            {
+                s.AppendLine(node.Data.ToString());
+            }
+
+            return s.ToString();
         }
 
         private class TopologicalSort

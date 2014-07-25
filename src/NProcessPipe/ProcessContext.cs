@@ -8,14 +8,12 @@ namespace NProcessPipe
 {
     public interface IProcessContext
     {
-        IDictionary<string, dynamic> Data {get;}
-        IProcessLogger Log { get; }
     }
 
-    public class ProcessContext : IProcessContext
+    public class DefaultProcessContext : IProcessContext
     {
 
-        public ProcessContext(IProcessLogger log)
+        public DefaultProcessContext(IProcessLogger log)
         {
             Data = new Dictionary<string, object>();
             Log = log;

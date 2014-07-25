@@ -7,11 +7,21 @@ using System.Diagnostics;
 
 namespace NProcessPipe
 {
-    public abstract class ProcessWithCustomContext<T, TContext> : IProcess<T, TContext>
+    public abstract class Process<T> : Process<T, DefaultProcessContext>
+    where T : class
+    {
+
+        protected override DefaultProcessContext CreateProcessContext()
+        {
+            return new DefaultProcessContext(_log);
+        }
+    }
+
+    public abstract class Process<T, TContext> : IProcess<T, TContext>
         where T : class
         where TContext : IProcessContext
     {
-        private readonly IProcessLogger _log;
+        protected IProcessLogger _log;
         private readonly List<Exception> errors = new List<Exception>();
 
         public string ProcessName { get; set; }
@@ -22,7 +32,6 @@ namespace NProcessPipe
         protected virtual TContext CreateProcessContext()
         {
             throw new NotImplementedException();
-            //return new 
         }
 
         public void Execute(IEnumerable<T> processData)
@@ -113,19 +122,6 @@ namespace NProcessPipe
         public IEnumerable<Exception> GetAllErrors()
         {
             return errors.ToArray();
-        }
-
-        /// <summary>
-        /// Creates the process graph.
-        /// </summary>
-        /// <remarks>Use http://graphviz-dev.appspot.com/ to view an image of the graph or https://github.com/mdaines/viz.js/ to generate on the fly svg in html</remarks>
-        /// <param name="fileName">Name of the file. (optional)</param>
-        /// <returns>Dot file format notation</returns>
-        public string CreateProcessGraph(string fileName = null)
-        {
-            throw new NotImplementedException();
-            //var ops = PrepareOperations();
-            //return ops.(fileName);
         }
     }
 }

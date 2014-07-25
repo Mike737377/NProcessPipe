@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace NProcessPipe
 {
-    public interface IOperation<T>
+
+    public interface IOperation<T> : IOperation<T, IProcessContext>
+    { }
+
+    public interface IOperation<T, TContext>
+        where TContext : IProcessContext
     {
-        IEnumerable<T> Execute(IProcessContext context, IEnumerable<T> data);
+        IEnumerable<T> Execute(TContext context, IEnumerable<T> data);
     }
 
     public interface IOperationDependsOn<T>
