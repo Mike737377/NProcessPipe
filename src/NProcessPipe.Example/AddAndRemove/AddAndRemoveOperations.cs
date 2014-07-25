@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NProcessPipe.Example.AddAndRemove
 {
-    class AddAndRemoveOperations
+    public class AddAndRemoveOperations
     {
     }
 }

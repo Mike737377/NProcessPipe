@@ -38,10 +38,19 @@
   <ItemGroup>
     <Compile Include="AddAndRemove\AddAndRemoveOperations.cs" />
     <Compile Include="AddAndRemove\AddAndRemoveProcess.cs" />
+    <Compile Include="BasicPipeline\BasicPipelineOperations.cs" />
+    <Compile Include="BasicPipeline\BasicPipelineProcess.cs" />
+    <Compile Include="BasicPipeline\BasicPipelineTests.cs" />
+    <Compile Include="ConsoleLog.cs" />
+    <Compile Include="ProcessWithCustomContext\CustomContext.cs" />
+    <Compile Include="ProcessWithCustomContext\CustomContextOperations.cs" />
+    <Compile Include="ProcessWithCustomContext\CustomContextProcess.cs" />
+    <Compile Include="ProcessWithCustomContext\CustomContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SendOrders\Printer.cs" />
     <Compile Include="SendOrders\SendOrderOperations.cs" />
     <Compile Include="SendOrders\SendOrderProcess.cs" />
+    <Compile Include="SendOrders\SendOrderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NProcessPipe\NProcessPipe.csproj">

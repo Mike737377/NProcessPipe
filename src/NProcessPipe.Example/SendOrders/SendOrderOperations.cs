@@ -1,33 +1,68 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-//namespace NProcessPipe.Example.SendOrders
-//{
+namespace NProcessPipe.Example.SendOrders
+{
 
-//    public class PrintDeliverySticker : IOperation<SendOrderRow>
-//    {
-//    }
+    public class PrintDeliverySticker : IOperation<SendOrderRow>
+    {
+        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        {
+            foreach (var row in data)
+            {
+                yield return row;
+            }
+        }
+    }
 
-//    public class PrintInvoice : IOperation<SendOrderRow>
-//    {
-//    }
-
-    
-//    public class CreatePickingSlip : IOperation<SendOrderRow>
-//    {
-//    }
-
-//    public class PrintPickingSlip : IOperation<SendOrderRow>, IOperationDependsOn<CreatePickingSlip>
-//    {
-//    }
+    public class PrintInvoice : IOperation<SendOrderRow>
+    {
+        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        {
+            foreach (var row in data)
+            {
+                yield return row;
+            }
+        }
+    }
 
 
-//    public class GatherPaperwork : IOperation<SendOrderRow>,
-//        IOperationDependsOn<PrintDeliverySticker>,
-//        IOperationDependsOn<PrintInvoice>,
-//        IOperationDependsOn<PrintPickingSlip>
-//    {
-//    }
-//}
+    public class CreatePickingSlip : IOperation<SendOrderRow>
+    {
+        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        {
+            foreach (var row in data)
+            {
+                yield return row;
+            }
+        }
+    }
+
+    public class PrintPickingSlip : IOperation<SendOrderRow>, IOperationDependsOn<CreatePickingSlip>
+    {
+        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        {
+            foreach (var row in data)
+            {
+                yield return row;
+            }
+        }
+    }
+
+
+    public class GatherPaperwork : IOperation<SendOrderRow>,
+        IOperationDependsOn<PrintDeliverySticker>,
+        IOperationDependsOn<PrintInvoice>,
+        IOperationDependsOn<PrintPickingSlip>
+    {
+        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        {
+            foreach (var row in data)
+            {
+                yield return row;
+            }
+        }
+    }
+}
