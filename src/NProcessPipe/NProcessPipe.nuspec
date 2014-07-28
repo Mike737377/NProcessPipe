@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>NProcessPipe</id>
+    <version>0.0.1.0</version>
+    <title>NProcessPipe</title>
+    <description>Process pipeline framework for creating your own step by step workflow ETL operations</description>
+    <authors>Michael Lyons</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>Copyright ©  2014</copyright>
+    <projectUrl>https://github.com/Mike737377/NProcessPipe</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/Mike737377/NProcessPipe/master/LICENSE</licenseUrl>
+    <tags>etl, process, pipeline</tags>
+  </metadata>
+</package>
