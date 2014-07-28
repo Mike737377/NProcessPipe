@@ -8,18 +8,18 @@ namespace NProcessPipe.Example.ProcessWithCustomContext
     public class CustomContextProcess : Process<CustomContextProcessRow, CustomContext>
     {
 
-        public CustomContextProcess()
+        protected override IProcessLogger CreateLog()
         {
-            _log = new ConsoleLog();
+            return new ConsoleLog();
         }
 
-        protected override CustomContext CreateProcessContext()
+        protected override CustomContext CreateProcessContext(IProcessLogger log, IDictionary<string, dynamic> data)
         {
             return new CustomContext();
         }
     }
 
-    public class CustomContextProcessRow 
+    public class CustomContextProcessRow
     {
     }
 }

@@ -7,9 +7,9 @@ namespace NProcessPipe.Example.BasicPipeline
 {
     public class BasicPipelineProcess : Process<BasicPipelineRow>
     {
-        public BasicPipelineProcess()
+        protected override IProcessLogger CreateLog()
         {
-            _log = new ConsoleLog();
+            return new ConsoleLog();
         }
     }
 

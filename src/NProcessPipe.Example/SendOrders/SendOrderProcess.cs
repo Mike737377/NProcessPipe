@@ -7,9 +7,9 @@ namespace NProcessPipe.Example.SendOrders
 {
     public class SendOrderProcess : Process<SendOrderRow>
     {
-        public SendOrderProcess()
+        protected override IProcessLogger CreateLog()
         {
-            _log = new ConsoleLog();
+            return new ConsoleLog();
         }
     }
 

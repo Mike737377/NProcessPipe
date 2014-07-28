@@ -11,9 +11,9 @@ namespace NProcessPipe
         where T : class
     {
 
-        protected override DefaultProcessContext CreateProcessContext()
+        protected override DefaultProcessContext CreateProcessContext(IProcessLogger log, IDictionary<string, dynamic> contextData)
         {
-            return new DefaultProcessContext(_log);
+            return new DefaultProcessContext(log, contextData);
         }
     }
 
@@ -29,21 +29,27 @@ namespace NProcessPipe
         protected virtual void Initialise(OperationRegistryFactory<T, TContext> operationRegistryFactory)
         { }
 
-        protected virtual TContext CreateProcessContext()
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract IProcessLogger CreateLog();
+
+        protected abstract TContext CreateProcessContext(IProcessLogger log, IDictionary<string, dynamic> contextData);
 
         public void Execute(IEnumerable<T> processData)
         {
+            Execute(processData, new Dictionary<string, dynamic>());
+        }
+
+        public void Execute(IEnumerable<T> processData, IDictionary<string, dynamic> contextData)
+        {
             try
             {
-                if (string.IsNullOrWhiteSpace( ProcessName))
+                _log = CreateLog();
+
+                if (string.IsNullOrWhiteSpace(ProcessName))
                 {
                     ProcessName = this.GetType().Name;
                 }
 
-                var context = CreateProcessContext();
+                var context = CreateProcessContext(_log, contextData);
                 var pipeline = PreparePipeline(context, processData);
                 var enumerator = pipeline.GetEnumerator();
 
@@ -57,14 +63,14 @@ namespace NProcessPipe
                     try
                     {
 #endif
-                        while (enumerator.MoveNext())
+                    while (enumerator.MoveNext())
+                    {
+                        if (rowsProcessed > 0 && rowsProcessed % 25 == 0)
                         {
-                            if (rowsProcessed > 0 && rowsProcessed % 25 == 0)
-                            {
-                                _log.Info("{0} rows processed in {1}", rowsProcessed, ProcessName);
-                            }
-                            rowsProcessed++;
+                            _log.Info("{0} rows processed in {1}", rowsProcessed, ProcessName);
                         }
+                        rowsProcessed++;
+                    }
 #if DEBUG
                     }
                     catch

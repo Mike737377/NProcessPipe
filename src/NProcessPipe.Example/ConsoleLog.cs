@@ -57,21 +57,21 @@ namespace NProcessPipe.Example
             Console.WriteLine("Error: " + string.Format(messageFormat, args));
         }
 
-        public void Error(Exception ex)
+        public void Error<T>(T ex)
         {
             Console.WriteLine("Error: " + ex.ToString());
         }
 
-        public void Error(Exception ex, string message)
+        public void Error<T>(string message, T ex)
         {
             Console.WriteLine("Error: " + message);
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine("\t" + ex.ToString());
         }
 
-        public void Error(Exception ex, string messageFormat, params object[] args)
+        public void Error<T>(T ex, string messageFormat, params object[] args)
         {
             Console.WriteLine("Error: " + string.Format(messageFormat, args));
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine("\t" + ex.ToString());
         }
     }
 }

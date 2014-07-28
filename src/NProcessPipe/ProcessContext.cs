@@ -13,9 +13,9 @@ namespace NProcessPipe
     public class DefaultProcessContext : IProcessContext
     {
 
-        public DefaultProcessContext(IProcessLogger log)
+        public DefaultProcessContext(IProcessLogger log, IDictionary<string, dynamic> data)
         {
-            Data = new Dictionary<string, object>();
+            Data = data ?? new Dictionary<string, object>();
             Log = log;
         }
 
