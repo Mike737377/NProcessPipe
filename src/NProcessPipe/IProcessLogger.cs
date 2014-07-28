@@ -21,8 +21,8 @@ namespace NProcessPipe
 
         void Error(string message);
         void Error(string messageFormat, params object[] args);
-        void Error<T>(T ex);
-        void Error<T>(string message, T ex);
-        void Error<T>(T ex, string messageFormat, params object[] args);
+        void Error(Exception ex);
+        void Error(Exception ex, string message);
+        void Error(Exception ex, string messageFormat, params object[] args);
     }
 }
