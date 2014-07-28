@@ -21,17 +21,18 @@ namespace NProcessPipe
         where T : class
         where TContext : IProcessContext
     {
-        protected IProcessLogger _log;
+        private IProcessLogger _log;
         private readonly List<Exception> errors = new List<Exception>();
 
-        public string ProcessName { get; set; }
-
-        protected virtual void Initialise(OperationRegistryFactory<T, TContext> operationRegistryFactory)
-        { }
+        public string ProcessName { get; set; }        
 
         protected abstract IProcessLogger CreateLog();
-
         protected abstract TContext CreateProcessContext(IProcessLogger log, IDictionary<string, dynamic> contextData);
+
+        protected virtual void Initialise(OperationRegistryFactory<T, TContext> operationRegistryFactory) { }
+        protected virtual void BeginningExecution(TContext context) { }
+        protected virtual void CompletingExecution(TContext context) { }
+        protected virtual void AbortingExecution(TContext context) { }
 
         public void Execute(IEnumerable<T> processData)
         {
@@ -49,12 +50,19 @@ namespace NProcessPipe
                     ProcessName = this.GetType().Name;
                 }
 
+                if (processData.Count() == 0)
+                {
+                    _log.Info("No data to process, ending execution");
+                    return;
+                }
+
                 var context = CreateProcessContext(_log, contextData);
                 var pipeline = PreparePipeline(context, processData);
                 var enumerator = pipeline.GetEnumerator();
 
                 try
                 {
+                    BeginningExecution(context);
                     _log.Info("Started process {0} at {1}", ProcessName, DateTime.UtcNow);
                     var timer = Stopwatch.StartNew();
 
@@ -87,12 +95,14 @@ namespace NProcessPipe
                     timer.Stop();
                     _log.Info("{0} rows processed in {1}", rowsProcessed, ProcessName);
                     _log.Info("Completed process {0} at {1} in {2}", ProcessName, DateTime.UtcNow, timer.Elapsed);
+                    CompletingExecution(context);
                 }
                 catch (Exception ex)
                 {
                     string message = string.Format("Failed during execution of pipeline {0} with data {1}", ProcessName, enumerator.Current);
                     errors.Add(new ProcessException(message, ex));
                     _log.Error(ex, message);
+                    AbortingExecution(context);
                 }
 
             }
