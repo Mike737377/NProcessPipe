@@ -8,7 +8,7 @@ using System.Diagnostics;
 namespace NProcessPipe
 {
     public abstract class Process<T> : Process<T, DefaultProcessContext>
-    where T : class
+        where T : class
     {
 
         protected override DefaultProcessContext CreateProcessContext()
@@ -26,7 +26,7 @@ namespace NProcessPipe
 
         public string ProcessName { get; set; }
 
-        protected virtual void Initialise(OperationRegistryFactory<T> operationRegistryFactory)
+        protected virtual void Initialise(OperationRegistryFactory<T, TContext> operationRegistryFactory)
         { }
 
         protected virtual TContext CreateProcessContext()
@@ -98,14 +98,14 @@ namespace NProcessPipe
             }
         }
 
-        protected OperationRegistry<T> PrepareOperations()
+        protected OperationRegistry<T, TContext> PrepareOperations()
         {
-            var operationFactory = OperationRegistryFactory.Build<T>().ScanAssembly();
+            var operationFactory = OperationRegistryFactory.Build<T, TContext>().ScanAssembly();
             Initialise(operationFactory);
             return operationFactory.Create();
         }
 
-        private IEnumerable<T> PreparePipeline(IProcessContext context, IEnumerable<T> processData)
+        private IEnumerable<T> PreparePipeline(TContext context, IEnumerable<T> processData)
         {
             var ops = PrepareOperations();
             _log.Trace("Creating workflow pipeline: \r\n{0}", ops.CreateWorkflowGraph());

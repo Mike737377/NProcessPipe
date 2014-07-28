@@ -58,11 +58,16 @@ namespace NProcessPipe.DependencyAnalysis
                 _orderedRevisionVersion = _revisionVersion;
             }
 
-            return orderedNodes;
+            return orderedNodes ?? new List<Node<T>>();
         }
 
         public string CreateGraph()
         {
+            if (orderedNodes == null)
+            {
+                return string.Empty;
+            }
+
             var s = new StringBuilder();
 
             foreach (var node in orderedNodes)

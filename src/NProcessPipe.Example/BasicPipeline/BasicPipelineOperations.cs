@@ -7,7 +7,7 @@ namespace NProcessPipe.Example.BasicPipeline
 {
     public class Operation1 : IOperation<BasicPipelineRow>
     {
-        public IEnumerable<BasicPipelineRow> Execute(IProcessContext context, IEnumerable<BasicPipelineRow> data)
+        public IEnumerable<BasicPipelineRow> Execute(DefaultProcessContext context, IEnumerable<BasicPipelineRow> data)
         {
             foreach (var row in data)
             {
@@ -19,7 +19,7 @@ namespace NProcessPipe.Example.BasicPipeline
 
     public class Operation2 : IOperation<BasicPipelineRow>, IOperationDependsOn<Operation1>
     {
-        public IEnumerable<BasicPipelineRow> Execute(IProcessContext context, IEnumerable<BasicPipelineRow> data)
+        public IEnumerable<BasicPipelineRow> Execute(DefaultProcessContext context, IEnumerable<BasicPipelineRow> data)
         {
             foreach (var row in data)
             {
@@ -31,7 +31,7 @@ namespace NProcessPipe.Example.BasicPipeline
 
     public class Operation3 : IOperation<BasicPipelineRow>, IOperationDependsOn<Operation2>
     {
-        public IEnumerable<BasicPipelineRow> Execute(IProcessContext context, IEnumerable<BasicPipelineRow> data)
+        public IEnumerable<BasicPipelineRow> Execute(DefaultProcessContext context, IEnumerable<BasicPipelineRow> data)
         {
             foreach (var row in data)
             {

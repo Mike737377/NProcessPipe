@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace NProcessPipe
 {
 
-    public interface IOperation<T> : IOperation<T, IProcessContext>
+    public interface IOperation<T> : IOperation<T, DefaultProcessContext>
     { }
 
     public interface IOperation<T, TContext>

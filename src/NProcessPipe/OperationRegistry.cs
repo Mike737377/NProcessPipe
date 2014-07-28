@@ -8,20 +8,21 @@ using System.Threading.Tasks;
 
 namespace NProcessPipe
 {
-    public class OperationRegistry<TOperationRow> : IEnumerable<IOperation<TOperationRow>>
-            where TOperationRow : class
+    public class OperationRegistry<TOperationRow, TOperationContext> : IEnumerable<IOperation<TOperationRow, TOperationContext>>
+        where TOperationRow : class
+        where TOperationContext : IProcessContext
     {
 
-        private readonly List<IOperation<TOperationRow>> _operationsList = new List<IOperation<TOperationRow>>();
+        private readonly List<IOperation<TOperationRow, TOperationContext>> _operationsList = new List<IOperation<TOperationRow, TOperationContext>>();
         private readonly string _diagraph;
 
-        public OperationRegistry(IEnumerable<IOperation<TOperationRow>> operations, string diagraph)
+        public OperationRegistry(IEnumerable<IOperation<TOperationRow, TOperationContext>> operations, string diagraph)
         {
             _operationsList.AddRange(operations);
             _diagraph = diagraph;
         }
 
-        public IEnumerator<IOperation<TOperationRow>> GetEnumerator()
+        public IEnumerator<IOperation<TOperationRow, TOperationContext>> GetEnumerator()
         {
             return _operationsList.GetEnumerator();
         }

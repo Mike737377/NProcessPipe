@@ -8,7 +8,7 @@ namespace NProcessPipe.Example.SendOrders
 
     public class PrintDeliverySticker : IOperation<SendOrderRow>
     {
-        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        public IEnumerable<SendOrderRow> Execute(DefaultProcessContext context, IEnumerable<SendOrderRow> data)
         {
             foreach (var row in data)
             {
@@ -19,7 +19,7 @@ namespace NProcessPipe.Example.SendOrders
 
     public class PrintInvoice : IOperation<SendOrderRow>
     {
-        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        public IEnumerable<SendOrderRow> Execute(DefaultProcessContext context, IEnumerable<SendOrderRow> data)
         {
             foreach (var row in data)
             {
@@ -31,7 +31,7 @@ namespace NProcessPipe.Example.SendOrders
 
     public class CreatePickingSlip : IOperation<SendOrderRow>
     {
-        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        public IEnumerable<SendOrderRow> Execute(DefaultProcessContext context, IEnumerable<SendOrderRow> data)
         {
             foreach (var row in data)
             {
@@ -42,7 +42,7 @@ namespace NProcessPipe.Example.SendOrders
 
     public class PrintPickingSlip : IOperation<SendOrderRow>, IOperationDependsOn<CreatePickingSlip>
     {
-        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        public IEnumerable<SendOrderRow> Execute(DefaultProcessContext context, IEnumerable<SendOrderRow> data)
         {
             foreach (var row in data)
             {
@@ -57,7 +57,7 @@ namespace NProcessPipe.Example.SendOrders
         IOperationDependsOn<PrintInvoice>,
         IOperationDependsOn<PrintPickingSlip>
     {
-        public IEnumerable<SendOrderRow> Execute(IProcessContext context, IEnumerable<SendOrderRow> data)
+        public IEnumerable<SendOrderRow> Execute(DefaultProcessContext context, IEnumerable<SendOrderRow> data)
         {
             foreach (var row in data)
             {

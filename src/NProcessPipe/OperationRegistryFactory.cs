@@ -10,19 +10,21 @@ namespace NProcessPipe
 {
     public static class OperationRegistryFactory
     {
-        public static OperationRegistryFactory<TOperationRow> Build<TOperationRow>()
+        public static OperationRegistryFactory<TOperationRow, TOperationContext> Build<TOperationRow, TOperationContext>()
             where TOperationRow : class
+            where TOperationContext : IProcessContext
         {
-            return new OperationRegistryFactory<TOperationRow>();
+            return new OperationRegistryFactory<TOperationRow, TOperationContext>();
         }
     }
 
-    public class OperationRegistryFactory<TOperationRow>
+    public class OperationRegistryFactory<TOperationRow, TOperationContext>
         where TOperationRow : class
+        where TOperationContext : IProcessContext
     {
         private static readonly Type _dependencyType = typeof(IOperationDependsOn<>);
 
-        private readonly Type _operationType = typeof(IOperation<TOperationRow>);
+        private readonly Type _operationType = typeof(IOperation<TOperationRow, TOperationContext>);
         private readonly HashSet<Type> _locatedOperations = new HashSet<Type>();
 
         public OperationRegistryFactory()
@@ -33,12 +35,12 @@ namespace NProcessPipe
             }
         }
 
-        public OperationRegistryFactory<TOperationRow> ScanAssembly()
+        public OperationRegistryFactory<TOperationRow, TOperationContext> ScanAssembly()
         {
             return ScanAssembly(typeof(TOperationRow).Assembly);
         }
 
-        public OperationRegistryFactory<TOperationRow> ScanAssembly(Assembly assembly)
+        public OperationRegistryFactory<TOperationRow, TOperationContext> ScanAssembly(Assembly assembly)
         {            
             var foundOperationTypes = assembly.GetTypes().Where(x => !x.IsAbstract && _operationType.IsAssignableFrom(x));
 
@@ -50,7 +52,7 @@ namespace NProcessPipe
             return this;
         }
 
-        public OperationRegistryFactory<TOperationRow> AddOperation<TOperation>()
+        public OperationRegistryFactory<TOperationRow, TOperationContext> AddOperation<TOperation>()
             where TOperation : IOperation<TOperationRow>
         {
             _locatedOperations.Add(typeof(TOperation));
@@ -63,7 +65,7 @@ namespace NProcessPipe
             return dependencyDeclarations.Select(x => x.GetGenericArguments()[0]);
         }
 
-        public OperationRegistry<TOperationRow> Create()
+        public OperationRegistry<TOperationRow, TOperationContext> Create()
         {
             var dependencyGraph = new DependencyGraph<Type>();
             dependencyGraph.AddNodes(_locatedOperations);
@@ -78,10 +80,10 @@ namespace NProcessPipe
             }
 
             var orderedOperations = dependencyGraph.Order();
-            var operationInstances = orderedOperations.Select(x => Activator.CreateInstance(x.Data)).Cast<IOperation<TOperationRow>>();
+            var operationInstances = orderedOperations.Select(x => Activator.CreateInstance(x.Data)).Cast<IOperation<TOperationRow, TOperationContext>>();
             var graph = dependencyGraph.CreateGraph();
 
-            return new OperationRegistry<TOperationRow>(operationInstances, graph);
+            return new OperationRegistry<TOperationRow, TOperationContext>(operationInstances, graph);
         }
 
         public class OperationCreationException : Exception
