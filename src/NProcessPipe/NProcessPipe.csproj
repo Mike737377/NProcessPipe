@@ -43,6 +43,7 @@
     <Compile Include="IOperation.cs" />
     <Compile Include="IProcess.cs" />
     <Compile Include="IProcessLogger.cs" />
+    <Compile Include="NullLogger.cs" />
     <Compile Include="OperationRegistry.cs" />
     <Compile Include="OperationRegistryFactory.cs" />
     <Compile Include="Process.cs" />

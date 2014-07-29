@@ -52,7 +52,6 @@
     <Compile Include="ProcessCases\Scenarios\CircularDependencyProcessScenario.cs" />
     <Compile Include="ProcessCases\Scenarios\NoDependenciesScenario.cs" />
     <Compile Include="ProcessCases\Scenarios\NoOperationsProcessScenario.cs" />
-    <Compile Include="ProcessCases\NullLogger.cs" />
     <Compile Include="ProcessCases\Scenarios\OrderedProcessScenario.cs" />
     <Compile Include="ProcessCases\TestProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
