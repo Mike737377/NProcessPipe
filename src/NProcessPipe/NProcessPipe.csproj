@@ -39,6 +39,7 @@
     <Compile Include="DependencyAnalysis\DependencyGraph.cs" />
     <Compile Include="DependencyAnalysis\Edge.cs" />
     <Compile Include="DependencyAnalysis\Node.cs" />
+    <Compile Include="DependencyAnalysis\CircularDependencyException.cs" />
     <Compile Include="IOperation.cs" />
     <Compile Include="IProcess.cs" />
     <Compile Include="IProcessLogger.cs" />

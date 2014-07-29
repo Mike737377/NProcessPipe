@@ -100,17 +100,17 @@ namespace NProcessPipe
                 catch (Exception ex)
                 {
                     string message = string.Format("Failed during execution of pipeline {0} with data {1}", ProcessName, enumerator.Current);
-                    errors.Add(new ProcessException(message, ex));
                     _log.Error(ex, message);
                     AbortingExecution(context);
+                    throw new ProcessException(message, ex);
                 }
 
             }
             catch (Exception ex)
             {
                 string message = string.Format("Failed to create pipeline {0}", ProcessName);
-                errors.Add(new ProcessException(message, ex));
                 _log.Error(ex, message);
+                throw new ProcessException(message, ex);                
             }
         }
 

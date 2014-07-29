@@ -48,7 +48,7 @@ namespace NProcessPipe.DependencyAnalysis
             _edges.Add(new Edge<T>(new Node<T>(source), new Node<T>(target)));
             _revisionVersion = Guid.NewGuid();
         }
-         
+
         public IEnumerable<Node<T>> Order()
         {
             if (_orderedRevisionVersion != _revisionVersion)
@@ -112,6 +112,12 @@ namespace NProcessPipe.DependencyAnalysis
                 while (availableNodes.Count > 0)
                 {
                     var nodes = GetEntryNodes(edges, availableNodes);
+
+                    if (nodes.Count() == 0)
+                    {
+                        throw new CircularDependencyException(edges.Select(x => string.Format("{0}->{1}", x.Source, x.Target)));
+                    }
+
                     foreach (var node in nodes)
                     {
                         availableNodes.Remove(node);
