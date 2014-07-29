@@ -9,7 +9,6 @@ namespace NProcessPipe.DependencyAnalysis
     {
         public Node(T data)
         {
-            //Index = -1;
             Data = data;
         }
 
@@ -39,18 +38,5 @@ namespace NProcessPipe.DependencyAnalysis
         {
             return Data.ToString();
         }
-
-        //public void SetIndex(int index)
-        //{
-        //    Index = index;
-        //}
-
-        //public void SetLowLink(int lowlink)
-        //{
-        //    LowLink = lowlink;
-        //}
-
-        //public int Index { get; private set; }
-        //public int LowLink { get; private set; }
     }
 }
