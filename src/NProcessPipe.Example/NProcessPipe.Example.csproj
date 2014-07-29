@@ -46,6 +46,20 @@
     <Compile Include="ProcessWithCustomContext\CustomContextOperations.cs" />
     <Compile Include="ProcessWithCustomContext\CustomContextProcess.cs" />
     <Compile Include="ProcessWithCustomContext\CustomContextTests.cs" />
+    <Compile Include="ProductImport\ProductImportDemo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProductImport\ProductImportOperations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProductImport\ProductImportProcess.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProductImport\ProductImportProcessContext.cs" />
+    <Compile Include="ProductImport\ProductImportRow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProductImport\SimpleProductDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SendOrders\Printer.cs" />
     <Compile Include="SendOrders\SendOrderOperations.cs" />
