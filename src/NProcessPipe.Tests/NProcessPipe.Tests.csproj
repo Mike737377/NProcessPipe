@@ -49,6 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DependencyAnalysis\DependencyGraphTests.cs" />
+    <Compile Include="ProcessCases\Scenarios\CircularDependencyProcessScenario.cs" />
+    <Compile Include="ProcessCases\Scenarios\NoDependenciesScenario.cs" />
+    <Compile Include="ProcessCases\Scenarios\NoOperationsProcessScenario.cs" />
+    <Compile Include="ProcessCases\NullLogger.cs" />
+    <Compile Include="ProcessCases\Scenarios\OrderedProcessScenario.cs" />
+    <Compile Include="ProcessCases\TestProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +70,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
