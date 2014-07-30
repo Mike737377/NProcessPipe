@@ -41,7 +41,7 @@ namespace NProcessPipe
         }
 
         public OperationRegistryFactory<TOperationRow, TOperationContext> ScanAssembly(Assembly assembly)
-        {            
+        {
             var foundOperationTypes = assembly.GetTypes().Where(x => !x.IsAbstract && _operationType.IsAssignableFrom(x));
 
             foreach (var foundOperation in foundOperationTypes)
@@ -65,7 +65,7 @@ namespace NProcessPipe
             return dependencyDeclarations.Select(x => x.GetGenericArguments()[0]);
         }
 
-        public OperationRegistry<TOperationRow, TOperationContext> Create()
+        public OperationRegistry<TOperationRow, TOperationContext> CreateFor(IProcessAccessor process)
         {
             var dependencyGraph = new DependencyGraph<Type>();
             dependencyGraph.AddNodes(_locatedOperations);
@@ -83,7 +83,7 @@ namespace NProcessPipe
             var operationInstances = orderedOperations.Select(x => Activator.CreateInstance(x.Data)).Cast<IOperation<TOperationRow, TOperationContext>>();
             var graph = dependencyGraph.CreateGraph();
 
-            return new OperationRegistry<TOperationRow, TOperationContext>(operationInstances, graph);
+            return new OperationRegistry<TOperationRow, TOperationContext>(process, operationInstances, graph);
         }
 
         public class OperationCreationException : Exception
@@ -92,6 +92,8 @@ namespace NProcessPipe
                 : base(string.Format("Failed to created operation {0}.{1}. See inner exception for more details.", operationType.Namespace, operationType.Name), innerException)
             { }
         }
+
+
 
     }
 

@@ -10,21 +10,26 @@ namespace NProcessPipe
     public abstract class Process<T> : Process<T, DefaultProcessContext>
         where T : class
     {
-
         protected override DefaultProcessContext CreateProcessContext(IProcessLogger log, IDictionary<string, dynamic> contextData)
         {
             return new DefaultProcessContext(log, contextData);
         }
     }
 
-    public abstract class Process<T, TContext> : IProcess<T, TContext>
+    public interface IProcessAccessor
+    {
+        string ProcessName { get; }
+        IProcessLogger Log { get; }
+    }
+
+    public abstract class Process<T, TContext> : IProcess<T, TContext>, IProcessAccessor
         where T : class
         where TContext : IProcessContext
     {
         private IProcessLogger _log;
         private readonly List<Exception> errors = new List<Exception>();
 
-        public string ProcessName { get; set; }        
+        public string ProcessName { get; set; }
 
         protected abstract IProcessLogger CreateLog();
         protected abstract TContext CreateProcessContext(IProcessLogger log, IDictionary<string, dynamic> contextData);
@@ -52,45 +57,20 @@ namespace NProcessPipe
 
                 if (processData.Count() == 0)
                 {
-                    _log.Info("No data to process, ending execution");
+                    _log.Info("{0} has no data to process, ending execution", ProcessName);
                     return;
                 }
 
                 var context = CreateProcessContext(_log, contextData);
-                var pipeline = PreparePipeline(context, processData);
-                var enumerator = pipeline.GetEnumerator();
+                BeginningExecution(context);
+
+                var operations = GetOperations();
 
                 try
                 {
-                    BeginningExecution(context);
                     _log.Info("Started process {0} at {1}", ProcessName, DateTime.UtcNow);
                     var timer = Stopwatch.StartNew();
-
-                    int rowsProcessed = 0;
-#if DEBUG
-                    try
-                    {
-#endif
-                    while (enumerator.MoveNext())
-                    {
-                        if (rowsProcessed > 0 && rowsProcessed % 25 == 0)
-                        {
-                            _log.Info("{0} rows processed in {1}", rowsProcessed, ProcessName);
-                        }
-                        rowsProcessed++;
-                    }
-#if DEBUG
-                    }
-                    catch
-                    {
-                        if (Debugger.IsAttached)
-                        {
-                            Debugger.Break();
-                        }
-
-                        throw;
-                    }
-#endif
+                    var rowsProcessed = ExecuteOperations(operations, context, processData);
 
                     timer.Stop();
                     _log.Info("{0} rows processed in {1}", rowsProcessed, ProcessName);
@@ -99,45 +79,77 @@ namespace NProcessPipe
                 }
                 catch (Exception ex)
                 {
-                    string message = string.Format("Failed during execution of pipeline {0} with data {1}", ProcessName, enumerator.Current);
+                    var message = string.Format("Failed during execution of pipeline {0}", ProcessName);
+
                     _log.Error(ex, message);
                     AbortingExecution(context);
+
                     throw new ProcessException(message, ex);
                 }
 
             }
             catch (Exception ex)
             {
-                string message = string.Format("Failed to create pipeline {0}", ProcessName);
+                var message = string.Format("Failed to create pipeline {0}", ProcessName);
                 _log.Error(ex, message);
-                throw new ProcessException(message, ex);                
+                throw new ProcessException(message, ex);
             }
         }
 
-        protected OperationRegistry<T, TContext> PrepareOperations()
+        protected OperationRegistry<T, TContext> GetOperations()
         {
             var operationFactory = OperationRegistryFactory.Build<T, TContext>().ScanAssembly();
             Initialise(operationFactory);
-            return operationFactory.Create();
+            var ops = operationFactory.CreateFor(this);
+            _log.Trace("Creating workflow pipeline: \r\n{0}", ops.CreateWorkflowGraph());
+            return ops;
         }
 
-        private IEnumerable<T> PreparePipeline(TContext context, IEnumerable<T> processData)
+        private int ExecuteOperations(OperationRegistry<T, TContext> operations, TContext context, IEnumerable<T> processData)
         {
-            var ops = PrepareOperations();
-            _log.Trace("Creating workflow pipeline: \r\n{0}", ops.CreateWorkflowGraph());
+            var yeildWarning = false;
+            var firstOperationHasExecuted = false;
 
-            foreach (var operation in ops)
+            foreach (var operation in operations)
             {
-                var enumerator = operation.Execute(context, processData);
-                processData = new ProcessEnumerable<T>(enumerator);
+                var operationEnumerator = operation.Execute(context, processData);
+
+                if (!firstOperationHasExecuted && operations.HasNonYieldingOperations)
+                {
+                    firstOperationHasExecuted = true;
+                    yeildWarning = true;
+                    _log.Warn("Process has non yielding operations. Process will run per operation instead of per row.");
+                    operations.DisplayYieldedMessages(false);
+                }
+
+                processData = new ProcessEnumerable<T>(operationEnumerator);
             }
 
-            return processData;
+            var rowsSuccessfullyProcessed = yeildWarning ? processData.Count() : 0;
+
+            if (!yeildWarning)
+            {
+                var dataEnumerator = processData.GetEnumerator();
+                while (dataEnumerator.MoveNext())
+                {
+                    rowsSuccessfullyProcessed++;
+                }
+            }
+
+            return rowsSuccessfullyProcessed;
         }
 
         public IEnumerable<Exception> GetAllErrors()
         {
             return errors.ToArray();
+        }
+
+        IProcessLogger IProcessAccessor.Log
+        {
+            get
+            {
+                return _log;
+            }
         }
     }
 }

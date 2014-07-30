@@ -40,6 +40,9 @@
     <Compile Include="DependencyAnalysis\Edge.cs" />
     <Compile Include="DependencyAnalysis\Node.cs" />
     <Compile Include="DependencyAnalysis\CircularDependencyException.cs" />
+    <Compile Include="InternalOperations\RowProcessingBeginningOperation.cs" />
+    <Compile Include="InternalOperations\RowProcessingEndingOperation.cs" />
+    <Compile Include="InternalOperations\YieldDetectionOperation.cs" />
     <Compile Include="IOperation.cs" />
     <Compile Include="IProcess.cs" />
     <Compile Include="IProcessLogger.cs" />

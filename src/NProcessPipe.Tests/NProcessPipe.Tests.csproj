@@ -49,10 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DependencyAnalysis\DependencyGraphTests.cs" />
+    <Compile Include="ProcessCases\ProcessEventLog.cs" />
     <Compile Include="ProcessCases\Scenarios\CircularDependencyProcessScenario.cs" />
     <Compile Include="ProcessCases\Scenarios\NoDependenciesScenario.cs" />
     <Compile Include="ProcessCases\Scenarios\NoOperationsProcessScenario.cs" />
     <Compile Include="ProcessCases\Scenarios\OrderedProcessScenario.cs" />
+    <Compile Include="ProcessCases\Scenarios\NonYieldingOperationScenario.cs" />
+    <Compile Include="ProcessCases\Scenarios\YieldingOperationScenario.cs" />
     <Compile Include="ProcessCases\TestProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
