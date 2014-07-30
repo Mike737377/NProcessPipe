@@ -4,12 +4,12 @@
     <id>NProcessPipe</id>
     <version>0.0.1.2</version>
     <title>NProcessPipe</title>
-    <description>Process pipeline framework for creating your own step by step workflow ETL operations</description>
+    <description>Process pipeline framework for creating your own step by step ETL operation workflow</description>
     <authors>Michael Lyons</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <copyright>Copyright ©  2014</copyright>
+    <copyright>Copyright © 2014</copyright>
     <projectUrl>https://github.com/Mike737377/NProcessPipe</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/Mike737377/NProcessPipe/master/LICENSE</licenseUrl>
-    <tags>etl, process, pipeline</tags>
+    <tags>etl, process, pipeline, workflow</tags>
   </metadata>
 </package>
