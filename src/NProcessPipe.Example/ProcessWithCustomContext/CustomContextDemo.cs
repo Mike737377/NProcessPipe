@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NProcessPipe.Example.ProcessWithCustomContext
 {
-    public class CustomContextTests
+    public class CustomContextDemo
     {
         public void Demo()
         {

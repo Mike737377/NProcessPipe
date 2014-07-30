@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NProcessPipe.Example.BasicPipeline
 {
-    public class BasicPipelineTests
+    public class BasicPipelineDemo
     {
 
         public void Demo()

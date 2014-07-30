@@ -5,10 +5,10 @@ using System.Text;
 
 namespace NProcessPipe.Example.SendOrders
 {
-    public class SendOrderTests
+    public class SendOrderDemo
     {
 
-        public void Test()
+        public void Demo()
         {
 
             var ordersToSend = new List<SendOrderRow>();

@@ -40,12 +40,12 @@
     <Compile Include="AddAndRemove\AddAndRemoveProcess.cs" />
     <Compile Include="BasicPipeline\BasicPipelineOperations.cs" />
     <Compile Include="BasicPipeline\BasicPipelineProcess.cs" />
-    <Compile Include="BasicPipeline\BasicPipelineTests.cs" />
+    <Compile Include="BasicPipeline\BasicPipelineDemo.cs" />
     <Compile Include="ConsoleLog.cs" />
     <Compile Include="ProcessWithCustomContext\CustomContext.cs" />
     <Compile Include="ProcessWithCustomContext\CustomContextOperations.cs" />
     <Compile Include="ProcessWithCustomContext\CustomContextProcess.cs" />
-    <Compile Include="ProcessWithCustomContext\CustomContextTests.cs" />
+    <Compile Include="ProcessWithCustomContext\CustomContextDemo.cs" />
     <Compile Include="ProductImport\ProductImportDemo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -64,13 +64,16 @@
     <Compile Include="SendOrders\Printer.cs" />
     <Compile Include="SendOrders\SendOrderOperations.cs" />
     <Compile Include="SendOrders\SendOrderProcess.cs" />
-    <Compile Include="SendOrders\SendOrderTests.cs" />
+    <Compile Include="SendOrders\SendOrderDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NProcessPipe\NProcessPipe.csproj">
       <Project>{023caa50-b794-4629-b37c-96e46f419c83}</Project>
       <Name>NProcessPipe</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
