@@ -46,6 +46,9 @@ namespace NProcessPipe
 
         public void Execute(IEnumerable<T> processData, IDictionary<string, dynamic> contextData)
         {
+            TContext context;
+            OperationRegistry<T, TContext> operations;
+
             try
             {
                 _log = CreateLog();
@@ -61,37 +64,36 @@ namespace NProcessPipe
                     return;
                 }
 
-                var context = CreateProcessContext(_log, contextData);
+                context = CreateProcessContext(_log, contextData);
                 BeginningExecution(context);
 
-                var operations = GetOperations();
-
-                try
-                {
-                    _log.Info("Started process {0} at {1}", ProcessName, DateTime.UtcNow);
-                    var timer = Stopwatch.StartNew();
-                    var rowsProcessed = ExecuteOperations(operations, context, processData);
-
-                    timer.Stop();
-                    _log.Info("{0} rows processed in {1}", rowsProcessed, ProcessName);
-                    _log.Info("Completed process {0} at {1} in {2}", ProcessName, DateTime.UtcNow, timer.Elapsed);
-                    CompletingExecution(context);
-                }
-                catch (Exception ex)
-                {
-                    var message = string.Format("Failed during execution of pipeline {0}", ProcessName);
-
-                    _log.Error(ex, message);
-                    AbortingExecution(context);
-
-                    throw new ProcessException(message, ex);
-                }
-
+                operations = GetOperations();
             }
             catch (Exception ex)
             {
                 var message = string.Format("Failed to create pipeline {0}", ProcessName);
                 _log.Error(ex, message);
+                throw new ProcessException(message, ex);
+            }
+
+            try
+            {
+                _log.Info("Started process {0} at {1}", ProcessName, DateTime.UtcNow);
+                var timer = Stopwatch.StartNew();
+                var rowsProcessed = ExecuteOperations(operations, context, processData);
+
+                timer.Stop();
+                _log.Info("{0} rows processed in {1}", rowsProcessed, ProcessName);
+                _log.Info("Completed process {0} at {1} in {2}", ProcessName, DateTime.UtcNow, timer.Elapsed);
+                CompletingExecution(context);
+            }
+            catch (Exception ex)
+            {
+                var message = string.Format("Failed during execution of pipeline {0} while processing row", ProcessName);
+
+                _log.Error(ex, message);
+                AbortingExecution(context);
+
                 throw new ProcessException(message, ex);
             }
         }
