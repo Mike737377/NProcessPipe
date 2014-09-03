@@ -3,7 +3,16 @@
 -------
 
 ### Basic pipeline ###
-A basic pipeline process which executes in order
+A basic pipeline process which stream each row to the next operation in order of dependencies
+
+The output of the pipeline is as follows:
+
+1. Operation 1 running with message 'First Row'
+2. Operation 2 running with message 'First Row'
+3. Operation 3 running with message 'First Row'
+4. Operation 1 running with message 'Second Row'
+5. Operation 2 running with message 'Second Row'
+6. Operation 3 running with message 'Second Row'
 
 ### Process with custom context ###
 A process with a custom context showing how data can be stuffed in the context and shared between all rows

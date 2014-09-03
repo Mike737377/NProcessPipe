@@ -12,7 +12,8 @@ namespace NProcessPipe.Example.BasicPipeline
         {
 
             var rows = new List<BasicPipelineRow>();
-            rows.Add(new BasicPipelineRow() { Message = "'This is the data'" });
+            rows.Add(new BasicPipelineRow() { Message = "'First Row'" });
+            rows.Add(new BasicPipelineRow() { Message = "'Second Row'" });
 
             var process = new BasicPipelineProcess();
             process.Execute(rows);
