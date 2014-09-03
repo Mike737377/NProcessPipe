@@ -65,6 +65,9 @@
     <Compile Include="SendOrders\SendOrderOperations.cs" />
     <Compile Include="SendOrders\SendOrderProcess.cs" />
     <Compile Include="SendOrders\SendOrderDemo.cs" />
+    <Compile Include="MixedYieldingPipeline\MixedYieldingPipelineDemo.cs" />
+    <Compile Include="MixedYieldingPipeline\MixedYieldingPipelineOperations.cs" />
+    <Compile Include="MixedYieldingPipeline\MixedYieldingPipelineProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NProcessPipe\NProcessPipe.csproj">
