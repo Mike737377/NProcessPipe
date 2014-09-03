@@ -3,6 +3,14 @@
 
 NProcessPipe is a simple framework which can be used in advanced scenarios where you need to run data through a pipeline or workflow.
 
+## How to Install ##
+
+NProcessPipe is available on NuGet at [https://www.nuget.org/packages/NProcessPipe/](https://www.nuget.org/packages/NProcessPipe/)
+
+You can download and install through the NuGet Package Manager GUI or through NuGet Package Console with the command 
+
+> Install-Package NProcessPipe
+
 ## Getting Started Example ##
 
 In this example I'll take you through creating a process to import products into a database.
