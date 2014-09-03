@@ -78,5 +78,17 @@ namespace NProcessPipe.Tests.ProcessCases.Scenarios
             _data[0].OperationNameOrder[1].ShouldBe("LastStep");
         }
 
+        [Test]
+        public void ShouldCreateCorrectWorkflowGraph()
+        {
+            var graph = _process.Diagnostics.GetWorkflowGraph();
+
+            graph.Trim().ShouldBe(@"digraph G {
+0 [label=""NProcessPipe.Tests.ProcessCases.Scenarios.OrderedProcess+FirstStep""];
+1 [label=""NProcessPipe.Tests.ProcessCases.Scenarios.OrderedProcess+LastStep""];
+0 -> 1 [];
+}"
+);
+        }
     }
 }

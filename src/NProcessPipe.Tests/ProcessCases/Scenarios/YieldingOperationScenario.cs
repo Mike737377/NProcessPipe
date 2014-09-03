@@ -117,5 +117,18 @@ namespace NProcessPipe.Tests.ProcessCases.Scenarios
             YieldingOperationProcess.ExecutionOrder.Last().ShouldBe(ProcessEvent.Complete);
         }
 
+        [Test]
+        public void ShouldCreateCorrectWorkflowGraph()
+        {
+            var graph = _process.Diagnostics.GetWorkflowGraph();
+
+            graph.Trim().ShouldBe(@"digraph G {
+0 [label=""NProcessPipe.Tests.ProcessCases.Scenarios.YieldingOperationProcess+FirstYieldingOperation""];
+1 [label=""NProcessPipe.Tests.ProcessCases.Scenarios.YieldingOperationProcess+LastYieldingOperation""];
+0 -> 1 [];
+}"
+);
+        }
+
     }
 }

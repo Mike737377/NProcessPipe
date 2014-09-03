@@ -57,5 +57,17 @@ namespace NProcessPipe.Tests.ProcessCases.Scenarios
         {
             _data[0].OperationBravoRun.ShouldBe(true);
         }
+
+        [Test]
+        public void ShouldCreateCorrectWorkflowGraph()
+        {
+            var graph = _process.Diagnostics.GetWorkflowGraph();
+
+            graph.Trim().ShouldBe(@"digraph G {
+0 [label=""NProcessPipe.Tests.ProcessCases.Scenarios.NoDependenciesProcess+OperationAlpha""];
+1 [label=""NProcessPipe.Tests.ProcessCases.Scenarios.NoDependenciesProcess+OperationBravo""];
+}"
+);
+        }
     }
 }

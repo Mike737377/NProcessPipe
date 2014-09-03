@@ -83,7 +83,7 @@ namespace NProcessPipe
             var operationInstances = orderedOperations.Select(x => Activator.CreateInstance(x.Data)).Cast<IOperation<TOperationRow, TOperationContext>>();
             var graph = dependencyGraph.CreateGraph();
 
-            return new OperationRegistry<TOperationRow, TOperationContext>(process, operationInstances, graph);
+            return new OperationRegistry<TOperationRow, TOperationContext>(process, operationInstances, dependencyGraph);
         }
 
         public class OperationCreationException : Exception

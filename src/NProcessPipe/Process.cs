@@ -22,12 +22,19 @@ namespace NProcessPipe
         IProcessLogger Log { get; }
     }
 
-    public abstract class Process<T, TContext> : IProcess<T, TContext>, IProcessAccessor
+    public interface IProcessDiagnostics
+    {
+        string GetWorkflowGraph();
+        string GetWorkflowGraph(Func<Type, string> labelFormatter);
+    }
+
+    public abstract class Process<T, TContext> : IProcess<T, TContext>, IProcessAccessor, IProcessDiagnostics
         where T : class
         where TContext : IProcessContext
     {
         private IProcessLogger _log;
         private readonly List<Exception> errors = new List<Exception>();
+        private OperationRegistry<T, TContext> _ops;
 
         public string ProcessName { get; set; }
 
@@ -38,6 +45,8 @@ namespace NProcessPipe
         protected virtual void BeginningExecution(TContext context) { }
         protected virtual void CompletingExecution(TContext context) { }
         protected virtual void AbortingExecution(TContext context) { }
+
+        public IProcessDiagnostics Diagnostics { get { return this; } }
 
         public void Execute(IEnumerable<T> processData)
         {
@@ -100,11 +109,21 @@ namespace NProcessPipe
 
         protected OperationRegistry<T, TContext> GetOperations()
         {
-            var operationFactory = OperationRegistryFactory.Build<T, TContext>().ScanAssembly();
-            Initialise(operationFactory);
-            var ops = operationFactory.CreateFor(this);
-            _log.Trace("Creating workflow pipeline: \r\n{0}", ops.CreateWorkflowGraph());
-            return ops;
+            if (_ops == null)
+            {
+                lock (this)
+                {
+                    if (_ops == null)
+                    {
+                        var operationFactory = OperationRegistryFactory.Build<T, TContext>().ScanAssembly();
+                        Initialise(operationFactory);
+                        _ops = operationFactory.CreateFor(this);
+                        _log.Trace("Creating workflow pipeline: \r\n{0}", _ops.CreateWorkflowGraph(null));
+                    }
+                }
+            }
+
+            return _ops;
         }
 
         private int ExecuteOperations(OperationRegistry<T, TContext> operations, TContext context, IEnumerable<T> processData)
@@ -121,7 +140,6 @@ namespace NProcessPipe
                     firstOperationHasExecuted = true;
                     yeildWarning = true;
                     _log.Warn("Process has non yielding operations. Process will run per operation instead of per row.");
-                    operations.DisplayYieldedMessages(false);
                 }
 
                 processData = new ProcessEnumerable<T>(operationEnumerator);
@@ -145,6 +163,17 @@ namespace NProcessPipe
         {
             return errors.ToArray();
         }
+
+        string IProcessDiagnostics.GetWorkflowGraph()
+        {
+            return GetOperations().CreateWorkflowGraph(null);
+        }
+
+        string IProcessDiagnostics.GetWorkflowGraph(Func<Type, string> labelFormatter)
+        {
+            return GetOperations().CreateWorkflowGraph(labelFormatter);
+        }
+
 
         IProcessLogger IProcessAccessor.Log
         {

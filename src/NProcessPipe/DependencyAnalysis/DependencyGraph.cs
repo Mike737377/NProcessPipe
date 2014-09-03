@@ -63,17 +63,40 @@ namespace NProcessPipe.DependencyAnalysis
 
         public string CreateGraph()
         {
+            return CreateGraph(null);
+        }
+
+        public string CreateGraph(Func<T, string> labelFormatter)
+        {
             if (orderedNodes == null)
             {
                 return string.Empty;
             }
 
+            if (labelFormatter == null)
+            {
+                labelFormatter = new Func<T, string>(x => x.ToString());
+            }
+
             var s = new StringBuilder();
+            s.AppendLine("digraph G {");
+
+            var operationNumber = 0;
+            var nodeMap = new Dictionary<Node<T>, string>();
 
             foreach (var node in orderedNodes)
             {
-                s.AppendLine(node.Data.ToString());
+                nodeMap.Add(node, operationNumber.ToString());
+                s.AppendLine(string.Format(@"{0} [label=""{1}""];", operationNumber, labelFormatter(node.Data)));
+                operationNumber++;
             }
+
+            foreach (var edge in _edges)
+            {
+                s.AppendLine(string.Format(@"{0} -> {1} [];", nodeMap[edge.Target], nodeMap[edge.Source]));
+            }
+
+            s.AppendLine("}");
 
             return s.ToString();
         }
