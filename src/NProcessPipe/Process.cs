@@ -33,7 +33,7 @@ namespace NProcessPipe
         where TContext : IProcessContext
     {
         private IProcessLogger _log;
-        private readonly List<Exception> errors = new List<Exception>();
+        private readonly List<Exception> _errors = new List<Exception>();
         private OperationRegistry<T, TContext> _ops;
 
         public string ProcessName { get; set; }
@@ -47,6 +47,7 @@ namespace NProcessPipe
         protected virtual void AbortingExecution(TContext context) { }
 
         public IProcessDiagnostics Diagnostics { get { return this; } }
+        public bool ContinueOnError { get; set; }
 
         public void Execute(IEnumerable<T> processData)
         {
@@ -130,10 +131,13 @@ namespace NProcessPipe
         {
             var yeildWarning = false;
             var firstOperationHasExecuted = false;
+            var rowsSuccessfullyProcessed = 0;
+            var rowsErrored = 0;
+            var enumerableProcessData = processData;
 
             foreach (var operation in operations)
             {
-                var operationEnumerator = operation.Execute(context, processData);
+                var operationEnumerator = operation.Execute(context, enumerableProcessData);
 
                 if (!firstOperationHasExecuted && operations.HasNonYieldingOperations)
                 {
@@ -142,17 +146,40 @@ namespace NProcessPipe
                     _log.Warn("Process has non yielding operations. Process will run per operation instead of per row.");
                 }
 
-                processData = new ProcessEnumerable<T>(operationEnumerator);
+                enumerableProcessData = new ProcessEnumerable<T>(operationEnumerator);
             }
 
-            var rowsSuccessfullyProcessed = yeildWarning ? processData.Count() : 0;
+            rowsSuccessfullyProcessed = yeildWarning ? processData.Count() : 0;
 
             if (!yeildWarning)
             {
-                var dataEnumerator = processData.GetEnumerator();
-                while (dataEnumerator.MoveNext())
+                var dataEnumerator = enumerableProcessData.GetEnumerator();
+                var executionComplete = false;
+
+                while (!executionComplete)
                 {
-                    rowsSuccessfullyProcessed++;
+                    try
+                    {
+                        while (dataEnumerator.MoveNext())
+                        {
+                            rowsSuccessfullyProcessed++;
+                        }
+
+                        executionComplete = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        var currentRowIndex = rowsSuccessfullyProcessed + rowsErrored;
+                        var error = new ProcessRowException(string.Format("Failure occurred whilst processing row {0}. See row data for object information and inner exception for the cause.", rowsSuccessfullyProcessed), ex) { Row = currentRowIndex, RowData = processData.ToArray()[currentRowIndex] };
+
+                        rowsErrored++;
+                        _errors.Add(error);
+
+                        if (!ContinueOnError)
+                        {
+                            throw error;
+                        }
+                    }
                 }
             }
 
@@ -161,7 +188,7 @@ namespace NProcessPipe
 
         public IEnumerable<Exception> GetAllErrors()
         {
-            return errors.ToArray();
+            return _errors.ToArray();
         }
 
         string IProcessDiagnostics.GetWorkflowGraph()

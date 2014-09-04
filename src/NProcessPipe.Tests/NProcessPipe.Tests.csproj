@@ -51,6 +51,7 @@
     <Compile Include="DependencyAnalysis\DependencyGraphTests.cs" />
     <Compile Include="ProcessCases\ProcessEventLog.cs" />
     <Compile Include="ProcessCases\Scenarios\CircularDependencyProcessScenario.cs" />
+    <Compile Include="ProcessCases\Scenarios\ContinueOnExceptioningRowScenario.cs" />
     <Compile Include="ProcessCases\Scenarios\MultipleDependencyProcessScenario.cs" />
     <Compile Include="ProcessCases\Scenarios\NoDependenciesScenario.cs" />
     <Compile Include="ProcessCases\Scenarios\NoOperationsProcessScenario.cs" />

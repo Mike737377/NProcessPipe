@@ -53,6 +53,7 @@
     <Compile Include="ProcessContext.cs" />
     <Compile Include="ProcessEnumerable.cs" />
     <Compile Include="ProcessException.cs" />
+    <Compile Include="ProcessRowException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
